@@ -12,7 +12,10 @@ defmodule PentoWeb.WrongLive do
     <h1>Your score: <%= @score %></h1>
     <h2>
       <%= @message %>
+      <br>
       It's <%= time() %>
+      <br>
+      Answer: <%= @answer %>
     </h2>
     <h2>
       <%= for n <- 1..10 do %>
@@ -27,7 +30,7 @@ defmodule PentoWeb.WrongLive do
   end
 
   def answer() do
-    :rand.uniform(10)
+    :rand.uniform(10) |> to_string
   end
 
   def handle_event("guess", %{"number" =>  guess}=data, socket) do
@@ -43,22 +46,26 @@ defmodule PentoWeb.WrongLive do
   end
 
   def new_message(guess, socket) do
-    loss_message = "Your guess #{guess}. Wrong. Guess again."
-    win_message = "You Win!"
 
-    if guess == socket.assigns.answer do
-      message = win_message
+    guess_tuple = Float.parse(guess)
+    answer_tuple = Float.parse(socket.assigns.answer)
+
+    if elem(guess_tuple, 0) == elem(answer_tuple, 0) do
+      "You Win!"
     else
-      message = loss_message
+      "Your guess #{guess}. Wrong. Guess again."
     end
   end
 
   def new_score(guess, socket) do
 
-    if guess == socket.assigns.answer do
-      score = socket.assigns.score + 1
+    guess_tuple = Float.parse(guess)
+    answer_tuple = Float.parse(socket.assigns.answer)
+
+    if elem(guess_tuple, 0) == elem(answer_tuple, 0) do
+      socket.assigns.score + 1
     else
-      score = socket.assigns.score - 1
+      socket.assigns.score - 1
     end
   end
 
