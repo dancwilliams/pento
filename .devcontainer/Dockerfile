@@ -2,7 +2,7 @@
 # * Note: Using a Dockerfile is optional when using Docker *
 # * Compose but has been included here for completeness.   *
 # **********************************************************
-FROM elixir:${VARIANT}
+FROM elixir:1.13.4-alpine
 
 # This Dockerfile adds a non-root user with sudo access. Use the “remoteUser” property in
 # devcontainer.json to use it. More info: https://aka.ms/vscode-remote/containers/non-root-user.
