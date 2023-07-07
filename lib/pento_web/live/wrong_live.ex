@@ -2,7 +2,7 @@ defmodule PentoWeb.WrongLive do
   use PentoWeb, :live_view
 
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, score: 0, message: "Make a guess:", time: time())}
+    {:ok, assign(socket, score: 0, message: "Make a guess:", time: time(), winning_score: :rand.uniform(10))}
   end
 
   @spec render(any) :: Phoenix.LiveView.Rendered.t()
@@ -24,18 +24,37 @@ defmodule PentoWeb.WrongLive do
   end
 
   def handle_event("guess", %{"number" => guess}, socket) do
-    message = "Your guess: #{guess}. Wrong. Guess again. "
-    score = socket.assigns.score - 1
 
-    {
-      :noreply,
-      assign(
-        socket,
-        message: message,
-        score: score,
-        time: time()
-        )
-    }
+    if String.to_integer(guess) == socket.assigns.winning_score do
+      message = "Your guess: #{guess}. Win!"
+      score = socket.assigns.score + 1
+
+      {
+        :noreply,
+        assign(
+          socket,
+          message: message,
+          score: score,
+          time: time()
+          )
+      }
+
+    else
+      message = "Your guess: #{guess}. Wrong. Guess again. "
+      score = socket.assigns.score - 1
+
+      {
+        :noreply,
+        assign(
+          socket,
+          message: message,
+          score: score,
+          time: time()
+          )
+      }
+
+    end
+
   end
 
   def time() do
